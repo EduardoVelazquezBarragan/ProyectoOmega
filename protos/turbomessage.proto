@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package turbomessage;
+
+// -------------------------------------------
+// User registration and authentication
+// -------------------------------------------
+
+// Register a new user
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+}
+message RegisterResponse {
+  bool success = 1;
+  string message = 2; // In case of error or additional info
+}
+
+// Login existing user
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+message LoginResponse {
+  bool success = 1;
+  string token = 2;    // Session or JWT token
+  string message = 3;
+}
+
+// -------------------------------------------
+// Core mail message structure
+// -------------------------------------------
+
+message Message {
+  string id     = 1;      // UUID
+  string sender = 2;      // Sender username
+  string to     = 3;      // Recipient username
+  string subject = 4;
+  string body    = 5;
+  bool   read    = 6;     // false = unread
+}
+
+// -------------------------------------------
+// Sending a message
+// -------------------------------------------
+
+message SendMessageRequest {
+  string token   = 1;     // Auth token from Login
+  string to      = 2;
+  string subject = 3;
+  string body    = 4;
+}
+message SendMessageResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// -------------------------------------------
+// Listing inbox (server-streaming)
+// -------------------------------------------
+
+message ListInboxRequest {
+  string token = 1;       // Auth token
+}
+
+// -------------------------------------------
+// Reading a single message
+// -------------------------------------------
+
+message ReadMessageRequest {
+  string token      = 1;
+  string message_id = 2;
+}
+message ReadMessageResponse {
+  Message message = 1;
+}
+
+// -------------------------------------------
+// Deleting a message
+// -------------------------------------------
+
+message DeleteMessageRequest {
+  string token      = 1;
+  string message_id = 2;
+}
+message DeleteMessageResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// -------------------------------------------
+// TurboMessage gRPC service definition
+// -------------------------------------------
+
+service TurboMessage {
+  // User management
+  rpc Register      (RegisterRequest)      returns (RegisterResponse);
+  rpc Login         (LoginRequest)         returns (LoginResponse);
+
+  // Mail operations
+  rpc SendMessage   (SendMessageRequest)   returns (SendMessageResponse);
+  // Streams each Message entry back to the client
+  rpc ListInbox     (ListInboxRequest)     returns (stream Message);
+  rpc ReadMessage   (ReadMessageRequest)   returns (ReadMessageResponse);
+  rpc DeleteMessage (DeleteMessageRequest) returns (DeleteMessageResponse);
+}
