@@ -1,1 +1,0 @@
-{"mails": {"cace92bc-d4dc-4447-bc74-eb2d4f38bd8b": {"id": "cace92bc-d4dc-4447-bc74-eb2d4f38bd8b", "sender": "alice", "to": "bob", "subject": "\u00a1Hola Bob!", "body": "\u00bfC\u00f3mo est\u00e1s?", "read": true}}, "inbox": {"alice": [], "bob": []}, "outbox": {"alice": ["cace92bc-d4dc-4447-bc74-eb2d4f38bd8b"], "bob": []}}
